@@ -1,0 +1,7 @@
+---
+- !ruby/object:Group
+  name: Group1
+  members: []
+- !ruby/object:Group
+  name: Group2
+  members: []

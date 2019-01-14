@@ -1,0 +1,14 @@
+body {
+  font-family: sans-serif;
+  padding: 1em;
+}
+
+.flash {
+  padding: 1em;
+  margin: 1em;
+  background-color: #FFFF99;
+}
+
+.button {
+  display: inline;
+}

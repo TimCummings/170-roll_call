@@ -1,0 +1,17 @@
+<!-- groups.erb -->
+
+<h2>Groups</h2>
+
+<form method="get" action="/groups/new">
+  <button type="submit">Create New Group</button>
+</form>
+
+<ul>
+  <% Group.all.each do |group| %>
+    <li><a href="/groups/<%= group %>"><%= group %></a>
+    <form class="button" method="post" action="/groups/<%= group %>/delete">
+      <button type="submit">Delete</button>
+    </form>
+    </li>
+  <% end %>
+</ul>
