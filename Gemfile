@@ -4,6 +4,7 @@ ruby '2.6'
 
 gem 'sinatra'
 gem 'sinatra-contrib'
+gem 'erubis'
 
 group :development do
   gem 'minitest'
