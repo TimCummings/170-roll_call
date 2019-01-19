@@ -4,9 +4,9 @@
 
 require 'sinatra'
 require 'sinatra/reloader' if development?
-require 'psych'
+require 'tilt/erubis'
 
-require_relative 'group'
+require_relative 'groups'
 
 configure do
   enable :sessions
@@ -58,31 +58,64 @@ end
 
 # create a new group
 post '/groups' do
-  @group = Group.new params['group_name']
+  @group = Groups.new params['group_name']
   @group.save!
   flash "Created group #{@group}."
   redirect '/groups'
-rescue Group::Error => error
+rescue Groups::Error => error
   handle_error 422, error.message, :new
 end
 
-# view a specific group by name
-get '/groups/:group_name' do
-  @group = Group.find(params['group_name'])
+# view a specific group by ID
+get '/groups/:group_id' do
+  @group = Groups.find params['group_id'].to_i
 
   if @group.nil?
-    handle_error 404, "Group #{params['group_name']} does not exist.", :groups
+    handle_error 404, "Group #{params['group_id']} does not exist.", :groups
   else
     erb :group
   end
 end
 
-# delete a group by name
-post '/groups/:group_name/delete' do
-  @group = Group.new params['group_name']
-  @group.delete!
-  flash "Deleted group #{@group}."
-  redirect '/groups'
-rescue Group::Error => error
-  handle_error 422, error.message, :groups
+# delete a group by ID
+post '/groups/:group_id/delete' do
+  @group = Groups.find params['group_id'].to_i
+
+  if @group.nil?
+    handle_error 404, "Group #{params['group_id']} does not exist.", :groups
+  else
+    @group.delete!
+    flash "Deleted group #{@group}."
+    redirect '/groups'
+  end
+end
+
+# add a member to a group
+post '/groups/:group_id/members' do
+  @group = Groups.find params['group_id'].to_i
+  @member = params['member_name']
+
+  if empty? @member
+    handle_error 422, 'Member name cannot be empty.', :group
+  else
+    @group.add @member
+    @group.save!
+    flash "Added #{@member} to group #{@group}."
+    redirect "/groups/#{@group.id}"
+  end
+rescue Groups::Error => error
+  handle_error 422, error.message, :group
+end
+
+# delete a member from a group
+post '/groups/:group_id/members/:member_name/delete' do
+  @group = Groups.find params['group_id'].to_i
+  @member = params['member_name']
+ 
+  @group.remove @member
+  @group.save!
+  flash "Removed #{@member} from group #{@group}."
+  redirect "/groups/#{@group.id}"
+rescue Groups::Error => error
+  handle_error 422, error.message, :group
 end
