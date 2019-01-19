@@ -1,11 +1,12 @@
-# group.rb
+# groups.rb
 
 # frozen_string_literal :true
 
+require 'psych'
 require 'pry'
 
 # Collection for which roll is to be called, e.g. a class of students.
-class Group
+class Groups
   def self.root
     File.expand_path '..', __FILE__
   end
@@ -24,52 +25,41 @@ class Group
 
   def self.all
     if File.exist? path
-      Psych.load_file(path) || []
+      Psych.load_file(path) || {}
     else
-      []
+      {}
     end
   end
 
-  def self.find(name)
-    self.all.find { |group| group.name == name }
+  def self.find(id)
+    all[id]
   end
 
-  attr_reader :name, :members
+  attr_reader :name, :id, :members
 
   def initialize(name)
     raise Error, 'Group name cannot be empty.' if empty? name
     @name = name
+    @id = self.class.max_id + 1
     @members = []
   end
 
-  def ==(other)
-    name == other.name
+  def self.max_id
+    ids = all.map { |id, group| id }
+    ids.max || 0
   end
 
   def save!
     groups = self.class.all
-    raise Error, "Group #{self} already exists." if groups.include? self
-    groups << self
+    groups[id] = self
 
     File.open(self.class.path, 'w') { |file| file.write Psych.dump(groups) }
   end
 
   def delete!
     groups = self.class.all
-    group_index = groups.index(self)
 
-    if group_index
-      groups.slice! group_index
-      File.open(self.class.path, 'w') { |file| file.write Psych.dump(groups) }
-    end
-  end
-
-  def update!
-    groups = self.class.all
-    group_index = groups.index(self)
-
-    if group_index
-      groups[group_index] = self
+    if groups.delete id
       File.open(self.class.path, 'w') { |file| file.write Psych.dump(groups) }
     end
   end
@@ -98,7 +88,7 @@ class Group
     members.slice! member_index if member_index
   end
 
-  # generic Group exception class
+  # generic Groups exception class
   class Error < RuntimeError
   end
 end
