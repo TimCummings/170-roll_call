@@ -35,6 +35,11 @@ class Groups
     all[id]
   end
 
+  def self.max_id
+    ids = all.map { |id, group| id }
+    ids.max || 0
+  end
+
   attr_reader :name, :id, :members
 
   def initialize(name)
@@ -42,11 +47,6 @@ class Groups
     @name = name
     @id = self.class.max_id + 1
     @members = []
-  end
-
-  def self.max_id
-    ids = all.map { |id, group| id }
-    ids.max || 0
   end
 
   def save!
