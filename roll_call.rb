@@ -53,7 +53,7 @@ end
 
 # render new group form
 get '/groups/new' do
-  erb :new
+  erb :new_group
 end
 
 # create a new group
@@ -63,7 +63,7 @@ post '/groups' do
   flash "Created group #{@group}."
   redirect '/groups'
 rescue Groups::Error => error
-  handle_error 422, error.message, :new
+  handle_error 422, error.message, :new_group
 end
 
 # view a specific group by ID
@@ -118,4 +118,12 @@ post '/groups/:group_id/members/:member_name/delete' do
   redirect "/groups/#{@group.id}"
 rescue Groups::Error => error
   handle_error 422, error.message, :group
+end
+
+# View Rolls (previously logged roll calls)
+get '/rolls' do
+end
+
+# render the log (new) roll form
+get '/rolls/new' do
 end
