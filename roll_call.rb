@@ -7,6 +7,7 @@ require 'sinatra/reloader' if development?
 require 'tilt/erubis'
 
 require_relative 'groups'
+require_relative 'rolls'
 
 configure do
   enable :sessions
@@ -120,10 +121,29 @@ rescue Groups::Error => error
   handle_error 422, error.message, :group
 end
 
-# View Rolls (previously logged roll calls)
+# view rolls (previously logged roll calls)
 get '/rolls' do
+  erb :rolls
 end
 
 # render the log (new) roll form
 get '/rolls/new' do
+  @group = Groups.find params['group_id'].to_i
+  erb :new_roll
+end
+
+post '/rolls' do
+  @group = Groups.find params['group_id'].to_i
+  @date = Date.strptime params['date'], '%m-%d-%Y'
+  @present_members = params['present_members']
+
+  roll = Rolls.new @date, @group.id, @present_members
+  roll.save!
+  redirect '/rolls'
+end
+
+# view a roll by ID
+get '/rolls/:roll_id' do
+  @roll = Rolls.find params['roll_id'].to_i
+  erb :roll
 end

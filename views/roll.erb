@@ -1,0 +1,10 @@
+<!-- roll.erb -->
+
+<h2><%= @roll %></h2>
+
+<ul>
+  <lh>Present Members</lh>
+  <% @roll.present_members.each do |member| %>
+    <li><%= member %></li>
+  <% end %>
+</ul>

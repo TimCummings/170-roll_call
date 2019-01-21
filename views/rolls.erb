@@ -1,0 +1,14 @@
+<!-- rolls.erb -->
+
+<h2>Rolls</h2>
+
+<ul>
+  <% Rolls.all.each do |id, roll| %>
+    <li>
+      <a href="/rolls/<%= id %>"><%= roll %></a>
+      <form method="post" action="/rolls/<%= id %>/delete">
+        <button type="submit">Delete</button>
+      </form>
+    </li>
+  <% end %>
+</ul>

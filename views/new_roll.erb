@@ -1,0 +1,22 @@
+<!-- new_roll.erb -->
+
+<h2>Call Roll</h2>
+
+<form method="post" action="/rolls">
+  <input type="hidden" name="group_id" value=<%= @group.id %>>
+
+  <label for="date">Date</label>
+  <input type="text" name="date" id="date" placeholder="MM-DD-YYYY">
+  <br />
+  <br />
+  <ul>
+    <% @group.members.each do |member| %>
+      <input type="checkbox" name="present_members[]" id=<%= member %> value=<%= member %>>
+      <label for=<%= member %>><%= member %></label>
+      <br />
+    <% end %>
+  </ul>
+  <br />
+  <br />
+  <button type="submit">Submit</button>
+</form>
