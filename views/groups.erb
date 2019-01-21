@@ -8,10 +8,11 @@
 
 <ul>
   <% Groups.all.each do |id, group| %>
-    <li><a href="/groups/<%= id %>"><%= group %></a>
-    <form class="button" method="post" action="/groups/<%= id %>/delete">
-      <button type="submit">Delete</button>
-    </form>
+    <li>
+      <a href="/groups/<%= id %>"><%= group %></a>
+      <form class="button" method="post" action="/groups/<%= id %>/delete">
+        <button type="submit">Delete</button>
+      </form>
     </li>
   <% end %>
 </ul>
