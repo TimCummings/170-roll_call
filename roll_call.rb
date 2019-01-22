@@ -147,3 +147,16 @@ get '/rolls/:roll_id' do
   @roll = Rolls.find params['roll_id'].to_i
   erb :roll
 end
+
+# delete a roll by ID
+post '/rolls/:roll_id/delete' do
+  @roll = Rolls.find params['roll_id'].to_i
+
+  if @roll.nil?
+    handle_error 404, "Roll #{params['roll_id']} does not exist.", :rolls
+  else
+    @roll.delete!
+    flash "Deleted roll #{@roll}."
+    redirect '/rolls'
+  end
+end

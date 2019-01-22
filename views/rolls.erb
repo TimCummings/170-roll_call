@@ -6,7 +6,7 @@
   <% Rolls.all.each do |id, roll| %>
     <li>
       <a href="/rolls/<%= id %>"><%= roll %></a>
-      <form method="post" action="/rolls/<%= id %>/delete">
+      <form class="button" method="post" action="/rolls/<%= id %>/delete">
         <button type="submit">Delete</button>
       </form>
     </li>
