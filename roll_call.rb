@@ -31,14 +31,17 @@ def empty?(field)
 end
 
 def handle_error(status_code, error_message, view_to_render)
-  status status_code
   flash error_message
-  erb view_to_render
+  halt status_code, erb(view_to_render)
 end
 
 helpers do
   def flash(message)
     session['message'] = message
+  end
+
+  def checked?(present_members, member)
+    !present_members.nil? && present_members.include?(member)
   end
 end
 
@@ -132,10 +135,19 @@ get '/rolls/new' do
   erb :new_roll
 end
 
+# create a new roll
 post '/rolls' do
   @group = Groups.find params['group_id'].to_i
-  @date = Date.strptime params['date'], '%m-%d-%Y'
   @present_members = params['present_members']
+
+  begin
+    @date = Date.strptime params['date'], '%m-%d-%Y'
+  rescue ArgumentError
+    handle_error 422, 'Invalid date format. Use "MM-DD-YYYY".', :new_roll
+  end
+
+  puts "New Roll View params['date']: #{params['date']}"
+  puts "New Roll View @date: #{@date}"
 
   roll = Rolls.new @date, @group.id, @present_members
   roll.save!
