@@ -5,6 +5,11 @@
   <input type="hidden" name="group_id" value=<%= @group.id %>>
   <button type="submit">Log Roll</button>
 </form>
+
+<form method="get" action="/groups/<%= @group.id %>/edit">
+  <button type="submit">Edit Group</button>
+</form>
+
 <h3>Members</h3>
 
 <form method="post" action="/groups/<%= @group.id %>/members">

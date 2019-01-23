@@ -1,0 +1,10 @@
+<!-- edit_group.erb -->
+
+<h2>Edit Group <%= @group %></h2>
+
+<form method="post" action="/groups/<%= @group.id %>">
+  <label for="group_name">Group Name</label>
+  <input type="text" name="group_name" id="group_name" value="<%= @group.name %>">
+  <br />
+  <button type="submit">Save Changes</button>
+</form>

@@ -40,7 +40,8 @@ class Groups
     ids.max || 0
   end
 
-  attr_reader :name, :id, :members
+  attr_reader :id, :members
+  attr_accessor :name
 
   def initialize(name)
     raise Error, 'Group name cannot be empty.' if empty? name

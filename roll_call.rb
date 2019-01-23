@@ -81,6 +81,32 @@ get '/groups/:group_id' do
   end
 end
 
+# render the edit group form
+get '/groups/:group_id/edit' do
+  @group = Groups.find params['group_id'].to_i
+  erb :edit_group
+end
+
+# edit a group by ID
+post '/groups/:group_id' do
+  @group = Groups.find params['group_id'].to_i
+
+  # use class Initialize to detect errors
+  Groups.new params['group_name']
+
+  if @group.nil?
+    handle_error 404, "Group #{params['group_id']} does not exist.", :groups
+  else
+    @group.name = params['group_name']
+    @group.save!
+    flash "Updated group #{@group}."
+    redirect "/groups/#{@group.id}"
+  end
+
+  rescue Groups::Error => error
+    handle_error 422, error.message, :edit_group
+end
+
 # delete a group by ID
 post '/groups/:group_id/delete' do
   @group = Groups.find params['group_id'].to_i
