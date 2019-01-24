@@ -1,12 +1,12 @@
 <!-- group.erb -->
 
 <h2><%= @group %></h2>
-<form method="get" action="/rolls/new">
+<form class="button" method="get" action="/rolls/new">
   <input type="hidden" name="group_id" value=<%= @group.id %>>
   <button type="submit">Log Roll</button>
 </form>
 
-<form method="get" action="/groups/<%= @group.id %>/edit">
+<form class="button" method="get" action="/groups/<%= @group.id %>/edit">
   <button type="submit">Edit Group</button>
 </form>
 
