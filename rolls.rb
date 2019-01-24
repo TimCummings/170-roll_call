@@ -2,6 +2,7 @@
 
 # frozen_string_literal: true
 
+require 'psych'
 require 'date'
 
 # Record of attendance of Members in a Group on a Date.
@@ -41,9 +42,15 @@ class Rolls
 
   attr_reader :id, :date, :group_id, :present_members
 
-  def initialize(date, group_id, present_members)
+  def date=(date_string)
+    @date = Date.strptime(date_string, '%m-%d-%Y')
+  rescue ArgumentError
+    raise Error, 'Invalid date format. Use "MM-DD-YYYY".'
+  end
+
+  def initialize(date_string, group_id, present_members = [])
     @id = self.class.max_id + 1
-    @date = date
+    self.date = date_string
     @group_id = group_id
     @present_members = present_members
   end

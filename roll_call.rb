@@ -164,18 +164,10 @@ end
 # create a new roll
 post '/rolls' do
   @group = Groups.find params['group_id'].to_i
+  @date_string = params['date']
   @present_members = params['present_members']
 
-  begin
-    @date = Date.strptime params['date'], '%m-%d-%Y'
-  rescue ArgumentError
-    handle_error 422, 'Invalid date format. Use "MM-DD-YYYY".', :new_roll
-  end
-
-  puts "New Roll View params['date']: #{params['date']}"
-  puts "New Roll View @date: #{@date}"
-
-  roll = Rolls.new @date, @group.id, @present_members
+  roll = Rolls.new @date_string, @group.id, @present_members
   roll.save!
   redirect '/rolls'
 end
