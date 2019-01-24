@@ -41,10 +41,10 @@ class RollCallTest < Minitest::Test
 
     assert_equal 200, last_response.status
     assert_includes last_response.body,
-      '<li><a href="/groups/1">Test Group 1</a>'
+      '<a href="/groups/1">Test Group 1</a>'
 
     assert_includes last_response.body,
-      '<li><a href="/groups/2">Test Group 2</a>'
+      '<a href="/groups/2">Test Group 2</a>'
   end
 
   def test_creating_a_new_group
@@ -55,7 +55,7 @@ class RollCallTest < Minitest::Test
 
     assert_includes last_response.body, 'Created group Test Group.'
     assert_includes last_response.body,
-      '<li><a href="/groups/1">Test Group</a>'
+      '<a href="/groups/1">Test Group</a>'
   end
 
   def test_creating_a_new_group_without_a_name
