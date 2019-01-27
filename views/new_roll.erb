@@ -12,7 +12,7 @@
   <ul>
     <% @group.members.each do |member| %>
       <input type="checkbox" name="present_members[]" id=<%= member %> value=<%= member %>
-        <%= 'checked' if checked?(params['present_members'], member) %>>
+        <%== 'checked' if checked?(params['present_members'], member) %>>
       <label for=<%= member %>><%= member %></label>
       <br />
     <% end %>
