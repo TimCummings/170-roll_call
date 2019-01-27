@@ -216,7 +216,7 @@ class RollCallTest < Minitest::Test
                      'present_members' => ['Jack', 'Sarah'] }
 
     assert_equal 422, last_response.status
-    assert_includes last_response.body, 'Invalid date format. Use "MM-DD-YYYY".'
+    assert_includes last_response.body, 'Invalid date format.'
     assert_empty Rolls.all
   end
 
@@ -228,7 +228,7 @@ class RollCallTest < Minitest::Test
                      'present_members' => ['Jack', 'Sarah'] }
 
     assert_equal 422, last_response.status
-    assert_includes last_response.body, 'Invalid date format. Use "MM-DD-YYYY".'
+    assert_includes last_response.body, 'Invalid date format.'
     assert_empty Rolls.all
   end
 
