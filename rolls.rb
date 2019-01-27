@@ -5,6 +5,8 @@
 require 'psych'
 require 'date'
 
+require_relative 'groups'
+
 # Record of attendance of Members in a Group on a Date.
 class Rolls
   def self.root
@@ -40,19 +42,35 @@ class Rolls
     ids.max || 0
   end
 
-  attr_reader :id, :date, :group_id, :present_members
+  attr_reader :id, :date, :group, :present_members
 
   def date=(date_string)
     @date = Date.strptime(date_string, '%m-%d-%Y')
-  rescue ArgumentError
+  rescue ArgumentError, TypeError
     raise Error, 'Invalid date format. Use "MM-DD-YYYY".'
   end
 
-  def initialize(date_string, group_id, present_members = [])
+  def group=(group)
+    if group.nil? || Groups.find(group.id).nil?
+      raise Error, 'Invalid Group.'
+    else
+      @group = group
+    end
+  end
+
+  def present_members=(members)
+    if !members.is_a?(Array)
+      raise Error, 'Invalid Members.'
+    else
+      @present_members = members
+    end
+  end
+
+  def initialize(date_string, group, present_members = [])
     @id = self.class.max_id + 1
     self.date = date_string
-    @group_id = group_id
-    @present_members = present_members
+    self.group = group
+    self.present_members = present_members
   end
 
   def save!
@@ -70,12 +88,17 @@ class Rolls
     end
   end
 
+  def ==(other)
+    date == other.date &&
+      group.id == other.group.id &&
+      present_members == other.present_members
+  end
+
   def empty?(field)
     field.nil? || field.strip.empty?
   end
 
   def to_s
-    group = Groups.find group_id
     "#{group.name} - #{date}"
   end
 

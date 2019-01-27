@@ -32,12 +32,17 @@ class Groups
   end
 
   def self.find(id)
-    all[id]
+    raise Error, 'Invalid Group.' unless number?(id)
+    all[id.to_i]
   end
 
   def self.max_id
     ids = all.map { |id, group| id }
     ids.max || 0
+  end
+
+  def self.number?(id)
+    id.is_a?(Integer) || (id.is_a?(String) && id == id.to_i.to_s)
   end
 
   attr_reader :id, :members

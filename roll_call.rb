@@ -6,7 +6,6 @@ require 'sinatra'
 require 'sinatra/reloader' if development?
 require 'tilt/erubis'
 
-require_relative 'groups'
 require_relative 'rolls'
 
 configure do
@@ -72,10 +71,10 @@ end
 
 # view a specific group by ID
 get '/groups/:group_id' do
-  @group = Groups.find params['group_id'].to_i
+  @group = Groups.find params['group_id']
 
   if @group.nil?
-    handle_error 404, "Group #{params['group_id']} does not exist.", :groups
+    handle_error 404, 'Invalid Group.', :groups
   else
     erb :group
   end
@@ -95,7 +94,7 @@ post '/groups/:group_id' do
   Groups.new params['group_name']
 
   if @group.nil?
-    handle_error 404, "Group #{params['group_id']} does not exist.", :groups
+    handle_error 404, 'Invalid Group.', :groups
   else
     @group.name = params['group_name']
     @group.save!
@@ -112,7 +111,7 @@ post '/groups/:group_id/delete' do
   @group = Groups.find params['group_id'].to_i
 
   if @group.nil?
-    handle_error 404, "Group #{params['group_id']} does not exist.", :groups
+    handle_error 404, 'Invalid Group.', :groups
   else
     @group.delete!
     flash "Deleted group #{@group}."
@@ -157,19 +156,26 @@ end
 
 # render the log (new) roll form
 get '/rolls/new' do
-  @group = Groups.find params['group_id'].to_i
+  @group = Groups.find params['group_id']
   erb :new_roll
 end
 
 # create a new roll
 post '/rolls' do
-  @group = Groups.find params['group_id'].to_i
+  @group = Groups.find params['group_id']
   @date_string = params['date']
   @present_members = params['present_members']
 
-  roll = Rolls.new @date_string, @group.id, @present_members
+  roll = Rolls.new @date_string, @group, @present_members
   roll.save!
+
+  flash "Logged roll #{roll}."
   redirect '/rolls'
+
+rescue Groups::Error => error
+  handle_error 422, error.message, :groups
+rescue Rolls::Error => error
+  handle_error 422, error.message, :new_roll
 end
 
 # view a roll by ID
@@ -183,7 +189,7 @@ post '/rolls/:roll_id/delete' do
   @roll = Rolls.find params['roll_id'].to_i
 
   if @roll.nil?
-    handle_error 404, "Roll #{params['roll_id']} does not exist.", :rolls
+    handle_error 404, "Invalid Roll.", :rolls
   else
     @roll.delete!
     flash "Deleted roll #{@roll}."
