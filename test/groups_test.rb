@@ -41,6 +41,14 @@ class GroupsTest < Minitest::Test
     assert_equal group1.name, group2.name
   end
 
+  def test_delete!
+    group1 = Groups.new 'My Test Group'
+    group1.save!
+    group1.delete!
+
+    assert_nil Groups.find 1
+  end
+
   def test_member?
     group1 = Groups.new 'My Test Group'
     assert_equal false, group1.member?('Elizabeth')
